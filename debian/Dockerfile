@@ -1,20 +1,24 @@
 FROM debian:jessie
 
-# Install depandency packages
-RUN apt-get update -y && apt-get install -y --no-install-recommends --no-install-suggests \
+# Set environment
+ENV OPENRESTY_VERSION=1.9.15.1 \
+    OPENRESTY_PREFIX=/opt/openresty \
+    LAPIS_VERSION=1.5.1
+
+# Set Persistent Deps
+ENV PERSISTENT_DEPS \
         build-essential \
         ca-certificates \
         git-core \
         libpcre3-dev \
         libssl-dev \
         luarocks \
-        unzip \
-    && rm -r /var/lib/apt/lists/*
+        unzip
 
-# Set environment
-ENV OPENRESTY_VERSION=1.9.15.1 \
-    OPENRESTY_PREFIX=/opt/openresty \
-    LAPIS_VERSION=1.5.1
+# Install depandency packages
+RUN apt-get update -y && apt-get install -y --no-install-recommends --no-install-suggests \
+        $PERSISTENT_DEPS \
+    && rm -r /var/lib/apt/lists/*
 
 # Install OpenResty
 RUN set -xe && \
