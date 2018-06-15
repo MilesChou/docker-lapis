@@ -1,6 +1,6 @@
 # Docker Lapis
 
-[![](https://img.shields.io/docker/stars/mileschou/lapis.svg)](https://hub.docker.com/r/mileschou/lapis/) [![](https://img.shields.io/docker/pulls/mileschou/lapis.svg)](https://hub.docker.com/r/mileschou/lapis/)
+[![Build Status](https://travis-ci.com/MilesChou/docker-lapis.svg?branch=master)](https://travis-ci.com/MilesChou/docker-lapis) [![](https://img.shields.io/docker/stars/mileschou/lapis.svg)](https://hub.docker.com/r/mileschou/lapis/) [![](https://img.shields.io/docker/pulls/mileschou/lapis.svg)](https://hub.docker.com/r/mileschou/lapis/)
 
 Dockerized Lapis.
 
