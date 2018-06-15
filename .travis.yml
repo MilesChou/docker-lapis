@@ -1,0 +1,10 @@
+language: bash
+services: docker
+
+branches:
+  only:
+  - master
+
+script:
+- make alpine
+- make debian
