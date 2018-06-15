@@ -17,7 +17,7 @@ ENV PERSISTENT_DEPS \
 
 # Install depandency packages
 RUN apt-get update -y && apt-get install -y --no-install-recommends --no-install-suggests \
-        $PERSISTENT_DEPS \
+        ${PERSISTENT_DEPS} \
     && rm -r /var/lib/apt/lists/*
 
 # Install OpenResty
@@ -26,7 +26,7 @@ RUN set -xe && \
         tar xf openresty-${OPENRESTY_VERSION}.tar.gz && \
         cd openresty-${OPENRESTY_VERSION} && \
         ./configure \
-            --prefix=$OPENRESTY_PREFIX \
+            --prefix=${OPENRESTY_PREFIX} \
             --with-luajit \
             --with-http_realip_module \
             --with-http_stub_status_module \
@@ -34,10 +34,10 @@ RUN set -xe && \
         cd .. && rm -rf openresty-${OPENRESTY_VERSION}.tar.gz openresty-${OPENRESTY_VERSION}
 
 # Install Lapis
-RUN luarocks install lapis $LAPIS_VERSION && luarocks install moonscript
+RUN luarocks install lapis ${LAPIS_VERSION} && luarocks install moonscript
 
 # Set work directory
-WORKDIR $OPENRESTY_PREFIX/nginx/conf
+WORKDIR ${OPENRESTY_PREFIX}/nginx/conf
 
 ENV LAPIS_OPENRESTY=${OPENRESTY_PREFIX}/nginx/sbin/nginx
 

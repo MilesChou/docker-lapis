@@ -1,4 +1,4 @@
-FROM alpine:3.4
+FROM alpine:3.7
 
 # Set environment
 ENV OPENRESTY_VERSION=1.9.15.1 \
@@ -25,8 +25,8 @@ ENV PERSISTENT_DEPS \
 
 # Install depandency packages
 RUN set -xe && \
-        apk add --no-cache --virtual .build-deps $BUILD_DEPS && \
-        apk add --no-cache --virtual .persistent-deps $PERSISTENT_DEPS && \
+        apk add --no-cache --virtual .build-deps ${BUILD_DEPS} && \
+        apk add --no-cache --virtual .persistent-deps ${PERSISTENT_DEPS} && \
         update-ca-certificates && \
 
         # Install OpenResty
@@ -34,7 +34,7 @@ RUN set -xe && \
         tar xf openresty-${OPENRESTY_VERSION}.tar.gz && \
         cd openresty-${OPENRESTY_VERSION} && \
         ./configure \
-            --prefix=$OPENRESTY_PREFIX \
+            --prefix=${OPENRESTY_PREFIX} \
             --with-luajit \
             --with-http_realip_module \
             --with-http_stub_status_module \
@@ -55,11 +55,11 @@ RUN set -xe && \
 
         # Remove deps
         apk del .build-deps && \
-        luarocks install lapis $LAPIS_VERSION && luarocks install moonscript && \
-        cd $OPENRESTY_PREFIX/nginx/conf && mv nginx.conf nginx.conf.bk && lapis new && moonc *.moon
+        luarocks install lapis ${LAPIS_VERSION} && luarocks install moonscript && \
+        cd ${OPENRESTY_PREFIX}/nginx/conf && mv nginx.conf nginx.conf.bk && lapis new && moonc *.moon
 
 # Set work directory
-WORKDIR $OPENRESTY_PREFIX/nginx/conf
+WORKDIR ${OPENRESTY_PREFIX}/nginx/conf
 
 EXPOSE 8080
 EXPOSE 80
