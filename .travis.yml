@@ -5,6 +5,9 @@ branches:
   only:
   - master
 
+env:
+- VERSION=alpine
+- VERSION=debian
+
 script:
-- make alpine
-- make debian
+- make ${VERSION}
