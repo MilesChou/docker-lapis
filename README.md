@@ -8,11 +8,10 @@ The repository is a prototype image with [OpenResty](https://openresty.org/en/) 
 
 ## Supported tags and respective `Dockerfile` links
 
+* [`latest` (Dockerfile)](https://github.com/MilesChou/docker-lapis/blob/master/Dockerfile)
 * [`alpine` (alpine/Dockerfile)](https://github.com/MilesChou/docker-lapis/blob/master/alpine/Dockerfile)
-* [`debian`, `latest` (apache/Dockerfile)](https://github.com/MilesChou/docker-lapis/blob/master/debian/Dockerfile)
 
 ## Thanks
 
 * [GitHub](https://github.com/)
 * [Docker Hub](https://hub.docker.com/)
-* [Shields.io](https://img.shields.io/) provide docker hub stars and pulls badge

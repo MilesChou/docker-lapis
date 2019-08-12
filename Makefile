@@ -11,4 +11,4 @@ alpine:
 	docker build -t=$(IMAGE):alpine -f alpine/Dockerfile .
 
 debian:
-	docker build -t=$(IMAGE):debian -f debian/Dockerfile .
+	docker build -t=$(IMAGE):latest -f Dockerfile .
