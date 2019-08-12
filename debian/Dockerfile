@@ -1,50 +1,53 @@
-FROM debian:jessie
+FROM mileschou/lua:jit-2.1
+LABEL maintainer="MilesChou <github.com/MilesChou>"
 
 # Set environment
-ENV OPENRESTY_VERSION=1.9.15.1 \
-    OPENRESTY_PREFIX=/opt/openresty \
-    LAPIS_VERSION=1.5.1
+ENV OPENRESTY_VERSION=1.15.8.1 \
+    OPENRESTY_PREFIX=/usr/local/openresty \
+    LAPIS_VERSION=1.7.0
+ENV LAPIS_OPENRESTY=${OPENRESTY_PREFIX}/nginx/sbin/nginx \
+    PATH=${OPENRESTY_PREFIX}/bin:${OPENRESTY_PREFIX}/luajit/bin:${OPENRESTY_PREFIX}/nginx/sbin:${PATH}
 
 # Set Persistent Deps
-ENV PERSISTENT_DEPS \
+ENV BUILD_DEPS \
         build-essential \
-        ca-certificates \
         git-core \
-        libpcre3-dev \
-        libssl-dev \
-        luarocks \
-        unzip
+        unzip \
+        wget
 
 # Install depandency packages
-RUN apt-get update -y && apt-get install -y --no-install-recommends --no-install-suggests \
-        ${PERSISTENT_DEPS} \
-    && rm -r /var/lib/apt/lists/*
-
-# Install OpenResty
 RUN set -xe && \
+        apt-get update -y && apt-get install -y --no-install-recommends --no-install-suggests \
+            ${BUILD_DEPS} \
+            ca-certificates \
+            libpcre3-dev \
+            libssl-dev \
+            zlib1g-dev \
+        && \
+        # Install OpenResty
         wget https://openresty.org/download/openresty-${OPENRESTY_VERSION}.tar.gz && \
-        tar xf openresty-${OPENRESTY_VERSION}.tar.gz && \
+        tar xf openresty-${OPENRESTY_VERSION}.tar.gz && rm -f openresty-${OPENRESTY_VERSION}.tar.gz && \
         cd openresty-${OPENRESTY_VERSION} && \
         ./configure \
-            --prefix=${OPENRESTY_PREFIX} \
-            --with-luajit \
+            --with-luajit=/usr/local \
             --with-http_realip_module \
             --with-http_stub_status_module \
-        && make && make install && \
-        cd .. && rm -rf openresty-${OPENRESTY_VERSION}.tar.gz openresty-${OPENRESTY_VERSION}
-
-# Install Lapis
-RUN luarocks install lapis ${LAPIS_VERSION} && luarocks install moonscript
+        && \
+        make -j $(getconf _NPROCESSORS_ONLN) && make install && \
+        cd / && rm -rf openresty-${OPENRESTY_VERSION} && \
+        # Install Lapis
+        docker-luarocks-install lapis ${LAPIS_VERSION} && \
+        docker-luarocks-install moonscript && \
+        # Remove build deps
+        apt-get remove --purge -y ${BUILD_DEPS} && apt-get autoremove --purge -y && rm -r /var/lib/apt/lists/* && \
+        # Test
+        lapis -v && \
+        # Initial project
+        cd ${OPENRESTY_PREFIX}/nginx/conf && mv nginx.conf nginx.conf.bk && lapis new && moonc *.moon
 
 # Set work directory
 WORKDIR ${OPENRESTY_PREFIX}/nginx/conf
 
-ENV LAPIS_OPENRESTY=${OPENRESTY_PREFIX}/nginx/sbin/nginx
-
 EXPOSE 8080
-EXPOSE 80
-
-# Setup lapis project.
-RUN mv nginx.conf nginx.conf.bk && lapis new && moonc *.moon
 
 CMD ["lapis", "server", "production"]
