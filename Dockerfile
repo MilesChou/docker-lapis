@@ -5,8 +5,7 @@ LABEL maintainer="MilesChou <github.com/MilesChou>"
 ENV OPENRESTY_VERSION=1.15.8.1 \
     OPENRESTY_PREFIX=/usr/local/openresty \
     LAPIS_VERSION=1.7.0
-ENV LAPIS_OPENRESTY=${OPENRESTY_PREFIX}/nginx/sbin/nginx \
-    PATH=${OPENRESTY_PREFIX}/bin:${OPENRESTY_PREFIX}/luajit/bin:${OPENRESTY_PREFIX}/nginx/sbin:${PATH}
+ENV PATH=${OPENRESTY_PREFIX}/bin:${OPENRESTY_PREFIX}/nginx/sbin:${PATH}
 
 # Set Persistent Deps
 ENV BUILD_DEPS \
@@ -41,13 +40,6 @@ RUN set -xe && \
         # Remove build deps
         apt-get remove --purge -y ${BUILD_DEPS} && apt-get autoremove --purge -y && rm -r /var/lib/apt/lists/* && \
         # Test
-        lapis -v && \
-        # Initial project
-        cd ${OPENRESTY_PREFIX}/nginx/conf && mv nginx.conf nginx.conf.bk && lapis new && moonc *.moon
+        lapis -v
 
-# Set work directory
-WORKDIR ${OPENRESTY_PREFIX}/nginx/conf
-
-EXPOSE 8080
-
-CMD ["lapis", "server", "production"]
+CMD ["lapis", "-v"]
