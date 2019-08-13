@@ -1,6 +1,22 @@
 FROM mileschou/lua:jit-2.1
 LABEL maintainer="MilesChou <github.com/MilesChou>"
 
+# Ref https://github.com/openresty/docker-openresty/blob/master/alpine/Dockerfile
+ARG OPENRESTY_CONFIG_OPTIONS="\
+    --with-http_auth_request_module \
+    --with-http_gunzip_module \
+    --with-http_realip_module \
+    --with-http_ssl_module \
+    --with-http_stub_status_module \
+    --with-http_v2_module \
+    --with-ipv6 \
+    --with-pcre-jit \
+    --with-sha1-asm \
+    --with-stream \
+    --with-stream_ssl_module \
+    --with-threads \
+    "
+
 # Set environment
 ENV OPENRESTY_VERSION=1.15.8.1 \
     OPENRESTY_PREFIX=/usr/local/openresty \
@@ -29,8 +45,7 @@ RUN set -xe && \
         cd openresty-${OPENRESTY_VERSION} && \
         ./configure \
             --with-luajit=/usr/local \
-            --with-http_realip_module \
-            --with-http_stub_status_module \
+            ${OPENRESTY_CONFIG_OPTIONS} \
         && \
         make -j $(getconf _NPROCESSORS_ONLN) && make install && \
         cd / && rm -rf openresty-${OPENRESTY_VERSION} && \
