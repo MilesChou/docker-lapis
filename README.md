@@ -1,10 +1,10 @@
 # Docker Lapis
 
-[![Build Status](https://travis-ci.com/MilesChou/docker-lapis.svg?branch=master)](https://travis-ci.com/MilesChou/docker-lapis) [![](https://img.shields.io/docker/stars/mileschou/lapis.svg)](https://hub.docker.com/r/mileschou/lapis/) [![](https://img.shields.io/docker/pulls/mileschou/lapis.svg)](https://hub.docker.com/r/mileschou/lapis/)
+[![](https://img.shields.io/docker/stars/mileschou/lapis.svg)](https://hub.docker.com/r/mileschou/lapis/) [![](https://img.shields.io/docker/pulls/mileschou/lapis.svg)](https://hub.docker.com/r/mileschou/lapis/)
 
-Dockerized Lapis.
+Docker base image for Lapis, see https://hub.docker.com/r/mileschou/lapis/
 
-The repository is a prototype image with [OpenResty](https://openresty.org/en/) and [Lapis Framework](http://leafo.net/lapis/).
+The repository is a simple image with [OpenResty](https://openresty.org/en/) and [Lapis Framework](http://leafo.net/lapis/).
 
 ## Supported tags and respective `Dockerfile` links
 
