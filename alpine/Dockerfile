@@ -20,7 +20,7 @@ ARG OPENRESTY_CONFIG_OPTIONS="\
 # Set environment
 ENV OPENRESTY_VERSION=1.15.8.1 \
     OPENRESTY_PREFIX=/usr/local/openresty \
-    LAPIS_VERSION=1.7.0
+    LAPIS_VERSION=1.8.1
 ENV PATH=${OPENRESTY_PREFIX}/bin:${OPENRESTY_PREFIX}/nginx/sbin:${PATH}
 
 RUN set -xe && \
