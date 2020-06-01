@@ -1,4 +1,4 @@
-FROM mileschou/lua:jit-2.1-alpine
+FROM alpine:3.12
 LABEL maintainer="MilesChou <github.com/MilesChou>"
 
 # Ref https://github.com/openresty/docker-openresty/blob/master/alpine/Dockerfile
@@ -18,8 +18,9 @@ ARG OPENRESTY_CONFIG_OPTIONS="\
     "
 
 # Set environment
-ENV OPENRESTY_VERSION=1.15.8.1 \
+ENV OPENRESTY_VERSION=1.15.8.3 \
     OPENRESTY_PREFIX=/usr/local/openresty \
+    LUAROCKS_VERSION=3.3.1 \
     LAPIS_VERSION=1.8.1
 ENV PATH=${OPENRESTY_PREFIX}/bin:${OPENRESTY_PREFIX}/nginx/sbin:${PATH}
 
@@ -38,6 +39,8 @@ RUN set -xe && \
         # Install persistent deps
         apk add --no-cache \
             ca-certificates \
+            gcc \
+            openssl \
             pcre \
         && \
         update-ca-certificates && \
@@ -46,12 +49,30 @@ RUN set -xe && \
         tar xf openresty-${OPENRESTY_VERSION}.tar.gz && rm -f openresty-${OPENRESTY_VERSION}.tar.gz && \
         cd openresty-${OPENRESTY_VERSION} && \
         ./configure \
-            --with-luajit=/usr/local \
             ${OPENRESTY_CONFIG_OPTIONS} \
         && \
         make -j $(getconf _NPROCESSORS_ONLN) && make install && \
         cd / && rm -rf openresty-${OPENRESTY_VERSION} && \
-        # Install Lapis
+        # Create link
+        [ -e /usr/local/bin/luajit ] || ln -sf /usr/local/openresty/luajit/bin/luajit /usr/local/bin/luajit
+
+# Install LuaRocks
+RUN set -xe && \
+        wget https://luarocks.org/releases/luarocks-${LUAROCKS_VERSION}.tar.gz && \
+        tar zxf luarocks-${LUAROCKS_VERSION}.tar.gz && rm -f luarocks-${LUAROCKS_VERSION}.tar.gz && \
+        cd luarocks-${LUAROCKS_VERSION} && \
+        ./configure \
+            --with-lua=${OPENRESTY_PREFIX}/luajit \
+            --with-lua-include=${OPENRESTY_PREFIX}/luajit/include/luajit-2.1 \
+            --with-lua-lib=${OPENRESTY_PREFIX}/lualib \
+        && \
+        make -j $(getconf _NPROCESSORS_ONLN) build && make install && \
+        cd / && rm -rf luarocks-${LUAROCKS_VERSION}
+
+COPY docker-* /usr/local/bin
+
+# Install Lapis
+RUN set -xe && \
         docker-luarocks-install lapis ${LAPIS_VERSION} && \
         docker-luarocks-install moonscript && \
         # Remove build deps
