@@ -39,9 +39,11 @@ RUN set -xe && \
         # Install persistent deps
         apk add --no-cache \
             ca-certificates \
+            curl \
             gcc \
             openssl \
             pcre \
+            unzip \
         && \
         update-ca-certificates && \
         # Install OpenResty
@@ -69,15 +71,12 @@ RUN set -xe && \
         make -j $(getconf _NPROCESSORS_ONLN) build && make install && \
         cd / && rm -rf luarocks-${LUAROCKS_VERSION}
 
-COPY docker-* /usr/local/bin
-
 # Install Lapis
 RUN set -xe && \
-        docker-luarocks-install lapis ${LAPIS_VERSION} && \
-        docker-luarocks-install moonscript && \
+        luarocks install lapis ${LAPIS_VERSION} && \
+        luarocks install moonscript && \
         # Remove build deps
-        apk del .build-deps && \
-        # Test
-        lapis -v
-
+        apk del .build-deps
+        
+# Test
 CMD ["lapis", "-v"]
