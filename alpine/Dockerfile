@@ -1,5 +1,8 @@
 FROM alpine:3.12
-LABEL maintainer="MilesChou <github.com/MilesChou>"
+
+LABEL org.opencontainers.image.source="https://github.com/MilesChou/docker-lapis" \
+    repository="https://github.com/MilesChou/docker-lapis" \
+    maintainer="MilesChou <github.com/MilesChou>"
 
 # Ref https://github.com/openresty/docker-openresty/blob/master/alpine/Dockerfile
 ARG OPENRESTY_CONFIG_OPTIONS="\

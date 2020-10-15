@@ -1,0 +1,29 @@
+name: Alpine
+
+on: [push]
+
+jobs:
+  alpine:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Build Alpine version and publish to GitHub Registry
+        uses: elgohr/Publish-Docker-Github-Action@2.22
+        with:
+          name: mileschou/lapis:alpine
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.GHCR_PAT }}
+          registry: ghcr.io
+          dockerfile: alpine/Dockerfile
+  debian:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Build Debian version and publish to GitHub Registry
+        uses: elgohr/Publish-Docker-Github-Action@2.22
+        with:
+          name: mileschou/lapis:latest
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.GHCR_PAT }}
+          registry: ghcr.io
+          dockerfile: Dockerfile
