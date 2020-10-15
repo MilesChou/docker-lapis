@@ -10,7 +10,8 @@ jobs:
       - name: Build Alpine version and publish to GitHub Registry
         uses: elgohr/Publish-Docker-Github-Action@2.22
         with:
-          name: mileschou/lapis:alpine
+          name: mileschou/lapis
+          tags: alpine
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.GHCR_PAT }}
           registry: ghcr.io
@@ -22,7 +23,8 @@ jobs:
       - name: Build Debian version and publish to GitHub Registry
         uses: elgohr/Publish-Docker-Github-Action@2.22
         with:
-          name: mileschou/lapis:latest
+          name: mileschou/lapis
+          tags: "latest,debian"
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.GHCR_PAT }}
           registry: ghcr.io
